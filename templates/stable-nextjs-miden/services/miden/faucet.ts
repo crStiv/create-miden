@@ -20,7 +20,8 @@ export async function deployFaucet(
       false,
       symbol,
       decimals,
-      BigInt(maxSupply)
+      BigInt(maxSupply),
+      1
     );
     return faucet;
   } catch (err) {
@@ -34,17 +35,19 @@ export async function mintToken(
   amount: bigint
 ): Promise<any> {
   try {
-    const { NoteType, WebClient, Address, NetworkId } = await import(
+    const { NoteType, WebClient, Address } = await import(
       '@demox-labs/miden-sdk'
     );
 
     const client = await WebClient.createClient(MIDEN_RPC_URL);
+    await client.syncState();
 
     const accountId = Address.fromBech32(account);
     const faucetId = Address.fromBech32(faucet);
 
     // import faucet
-    await importAndGetAccount(faucetId.toBech32(NetworkId.Testnet));
+    console.log('mintToken: before import faucet');
+    await importAndGetAccount(faucet);
 
     const mintTxRequest = client.newMintTransactionRequest(
       accountId.accountId(),
@@ -52,11 +55,12 @@ export async function mintToken(
       NoteType.Public,
       amount
     );
-    const txResult = await client.newTransaction(
+    console.log('mintToken: after import faucet');
+
+    const txResult = await client.submitNewTransaction(
       faucetId.accountId(),
       mintTxRequest
     );
-    await client.submitTransaction(txResult);
     return txResult;
   } catch (err) {
     console.log(err);

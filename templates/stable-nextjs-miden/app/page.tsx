@@ -9,10 +9,11 @@ import {
 } from '@demox-labs/miden-wallet-adapter';
 import { WalletMultiButton } from '@demox-labs/miden-wallet-adapter';
 import { mintToken } from '@/services/miden/faucet';
+import { MIDEN_FAUCET_ADDRESS } from '@/shared/constants';
 
 export default function Home() {
-  const { accountId, connected, wallet, requestAssets, requestTransaction } =
-    useWallet();
+  const { address, connected, wallet, requestAssets } = useWallet();
+
   const [activeTab, setActiveTab] = useState<'transfer' | 'faucet' | 'assets'>(
     'transfer'
   );
@@ -22,14 +23,10 @@ export default function Home() {
   // Transfer form state
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
-  const [faucetId, setFaucetId] = useState(
-    'mtst1qrpftjy5eds4ggqx4de4xj0r79cqqvxrnea'
-  ); // @note: feel free to replace this
+  const [faucetId, setFaucetId] = useState(MIDEN_FAUCET_ADDRESS); // @note: feel free to replace this
 
   // Faucet form state
-  const [faucetAddress, setFaucetAddress] = useState(
-    'mtst1qrpftjy5eds4ggqx4de4xj0r79cqqvxrnea'
-  );
+  const [faucetAddress, setFaucetAddress] = useState(MIDEN_FAUCET_ADDRESS);
   const [faucetAmount, setFaucetAmount] = useState('');
 
   // Assets state
@@ -39,7 +36,7 @@ export default function Home() {
 
   useEffect(() => {
     const load = async () => {
-      if (!connected || !accountId) return;
+      if (!connected || !address) return;
       try {
         const a = await requestAssets?.();
         if (Array.isArray(a)) setAssets(a);
@@ -47,10 +44,10 @@ export default function Home() {
     };
 
     load();
-  }, [connected, accountId, requestAssets]);
+  }, [connected, address, requestAssets]);
 
   const handleSend = async () => {
-    if (!accountId || !recipient || !amount || !faucetId || !wallet) {
+    if (!address || !recipient || !amount || !faucetId || !wallet) {
       setMessage('Please fill in all fields');
       return;
     }
@@ -60,7 +57,7 @@ export default function Home() {
 
     try {
       const transaction = new SendTransaction(
-        accountId,
+        address,
         recipient,
         faucetId,
         'public', // or 'private'
@@ -80,7 +77,7 @@ export default function Home() {
   };
 
   const handleClaimFaucet = async () => {
-    if (!accountId || !faucetAddress || !faucetAmount) {
+    if (!address || !faucetAddress || !faucetAmount) {
       setMessage('Please fill in all fields');
       return;
     }
@@ -89,8 +86,7 @@ export default function Home() {
     setMessage('');
 
     try {
-      console.log(accountId, faucetAddress, BigInt(parseInt(faucetAmount)));
-      await mintToken(accountId, faucetAddress, BigInt(parseInt(faucetAmount)));
+      await mintToken(address, faucetAddress, BigInt(parseInt(faucetAmount)));
       setMessage('Tokens claimed successfully!');
       setFaucetAddress('');
       setFaucetAmount('');
@@ -131,7 +127,7 @@ export default function Home() {
               </h1>
               <WalletMultiButton />
             </div>
-            <p className="text-sm text-gray-600 mt-1">Account: {accountId}</p>
+            <p className="text-sm text-gray-600 mt-1">Account: {address}</p>
           </div>
 
           {/* Tabs */}

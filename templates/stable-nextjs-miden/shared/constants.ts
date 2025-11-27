@@ -6,3 +6,5 @@ export const REFETCH_DELAY = 6000;
 export const SYNC_STATE_INTERVAL = 3000;
 export const MIDEN_EXPLORER_URL = 'https://testnet.midenscan.com';
 export const MIDEN_NETWORK_ID = 'mtst';
+export const MIDEN_FAUCET_ADDRESS =
+  'mtst1ar600d6s8uwwjgznqtxqt085qs9a50ej_qruqqypuyph';

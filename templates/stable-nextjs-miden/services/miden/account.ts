@@ -12,7 +12,8 @@ export async function deployAccount(isPublic: boolean = false) {
   const client = await WebClient.createClient(MIDEN_RPC_URL);
   const account = await client.newWallet(
     isPublic ? AccountStorageMode.public() : AccountStorageMode.private(),
-    true
+    true,
+    1
   );
   return account;
 }
@@ -36,12 +37,12 @@ export const getAccountAssets = async (
         const faucet = asset.faucetId();
 
         const metadata = await getFaucetMetadata(
-          faucet.toBech32(NetworkId.Testnet, AccountInterface.Unspecified)
+          faucet.toBech32(NetworkId.Testnet, AccountInterface.BasicWallet)
         );
         assetsWithMetadata.push({
           faucetId: asset
             .faucetId()
-            .toBech32(NetworkId.Testnet, AccountInterface.Unspecified),
+            .toBech32(NetworkId.Testnet, AccountInterface.BasicWallet),
           amount: asset.amount().toString(),
           metadata,
         });

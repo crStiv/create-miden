@@ -67,6 +67,8 @@ export function useInitAndPollSyncState() {
   }, [tick, client, syncState]);
 
   useEffect(() => {
+    console.log('DID I BEING CALL?');
+
     const intervalId = setInterval(
       () => setTick(tick => tick + 1),
       tickInterval
