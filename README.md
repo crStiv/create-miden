@@ -4,7 +4,7 @@ A CLI tool to quickly spin up Miden projects with Next.js, Miden WebClient and M
 
 ## Highlight
 
-- No need manual setup from scratch
+- No need for manual setup from scratch
 - Prepared with common functionalities
 
 ## Prerequisites
